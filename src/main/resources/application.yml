@@ -1,0 +1,19 @@
+# MY-SQL 연동
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306//naverApi?serverTimeZone=UTC&CharacterEncoding=UTF-8
+    username: root
+    password: mysql
+
+# MyBatis 연동
+mybatis:
+  type-aliases-package: com.aeat.aeatproject.domain
+  mapper-locations: classpath:mybatis/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+# Sever 설정(port 변경)
+server:
+  port: 8090
+

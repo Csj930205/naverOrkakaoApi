@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>검색</title>
+    <script type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=5yrdfzzlhn"></script>
+
+</head>
+<body>
+<!--<header th:insert="header.html"></header>-->
+<div id="map" style="width:50%;height:1000px; float: right"></div>
+<h1><a th:href="@{/search/search}" style="text-decoration: none; color: black">식당 검색</a></h1>
+<div class="container">
+    <form action="/search/list" method="get">
+        <div class="form-group">
+            <input type="text" name="keyword" placeholder="검색어를 입력하세요">
+        </div>
+        <button type="submit" onclick="http://localhost:8090/search/list">검색</button>
+    </form>
+    <div class="container" th:if="${searchList}">
+        <h2 style="text-align: center">검색 리스트</h2>
+        <table class="table">
+            <thead class="thead-light">
+            <tr class="text-center">
+                <th scope="col">title</th>
+                <th scope="col">link</th>
+                <th scope="col">category</th>
+                <th scope="col">address</th>
+                <th scope="col">road_address</th>
+                <th scope="col">map_x</th>
+                <th scope="col">map_y</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" th:each="search:${searchList}">
+                <th scope="row" th:text="${search.title}"></th>
+                <th scope="row" th:text="${search.link}"></th>
+                <th scope="row" th:text="${search.category}"></th>
+                <th scope="row" th:text="${search.address}"></th>
+                <th scope="row" th:text="${search.roadAddress}"></th>
+                <th scope="row" th:text="${search.mapx}"></th>
+                <th scope="row" th:text="${search.mapy}"></th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script th:inline="javascript">
+    var mapContainer = document.getElementById('map'),
+        mapOptions = { // 지도를 표시
+            center: new naver.maps.LatLng(37.486437, 126.984342), // 지도의 중심좌표
+            zoom: 18
+        };
+    var map = new naver.maps.Map(mapContainer, mapOptions); // 지도 생성
+
+    if (navigator.geolocation) { // HTML5의 geolocation으로 사용할 수 있는지 확인
+        navigator.geolocation.getCurrentPosition(function (position) { // geolocation을 이용해 접속 위치를 얻어온다
+            var lat = position.coords.latitude // 위도
+            var lon = position.coords.longitude // 경도
+
+            var locPosition = new naver.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표를 생성
+                message = '<div style="padding:5px;">Test</div>' // Test message
+            displayMarker(locPosition, message);
+            console.log(lat, lon);
+        });
+    } else {
+        var locPosition = new naver.maps.LatLng(37.4895246, 126.986331),
+            message = 'Failed Test' // Test message
+    }
+
+    function displayMarker(locPosition, message) { // 지도에 마커와 인포윈도우를 표시하는 함수
+        var marker = new naver.maps.Marker({
+            map: map,
+            position: locPosition
+        });
+        var iwContent = message, // 인포윈도우에 표시할 내용
+            iwRemoveable = true; // 인포윈도우에 삭제버튼 활성화 (false: 비활성화)
+
+        var infowindow = new naver.maps.InfoWindow({
+            content: iwContent,
+            removable: iwRemoveable
+        });
+        infowindow.open(map, marker); // 윈포윈도우를 마커위에 표시한다
+        map.setCenter(locPosition); // 지도 중심좌표를 접속위치로 변경
+    }
+
+</script>
+</body>
+</html>
