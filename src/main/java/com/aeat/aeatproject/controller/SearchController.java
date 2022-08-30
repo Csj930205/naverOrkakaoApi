@@ -53,9 +53,4 @@ public class SearchController {
         model.addAttribute("kakaoSearchList", searchApiClient.kakaoJsonSearchApi(result));
         return "search/kakaosearch";
     }
-
-    @GetMapping("kakaoTest")
-    public String test() {
-        return "search/kakaoTest";
-    }
 }

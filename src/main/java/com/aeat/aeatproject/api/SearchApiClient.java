@@ -44,7 +44,7 @@ public class SearchApiClient {
     /*
     * 카카오 키워드 검색
     * */
-    private final String kakaoSearchUri = "https://dapi.kakao.com/v2/local/search/keyword.json?query=이수역+{keyword}&sort=accuracy&size=1";
+    private final String kakaoSearchUri = "https://dapi.kakao.com/v2/local/search/keyword.json?query=이수역+{keyword}&sort=accuracy&size=15";
 
     /*
     * 네이버검색 API
