@@ -1,21 +1,23 @@
 package com.aeat.aeatproject.controller;
 
 import com.aeat.aeatproject.api.SearchApiClient;
+import com.aeat.aeatproject.domain.KakaoSearchDto;
 import com.aeat.aeatproject.domain.SearchForm;
+import com.aeat.aeatproject.service.KakaoSearchService;
 import com.aeat.aeatproject.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/search")
 @RequiredArgsConstructor
 public class SearchController {
     private final SearchService searchService;
+    private final KakaoSearchService kakaoSearchService;
     private final SearchApiClient searchApiClient;
 
     /*
@@ -53,4 +55,16 @@ public class SearchController {
         model.addAttribute("kakaoSearchList", searchApiClient.kakaoJsonSearchApi(result));
         return "search/kakaosearch";
     }
+    /*
+    * 카카오 등록
+    * */
+    @PostMapping("kakaosearch/insert")
+    public String kakaoSearchInsert(HttpServletRequest req) {
+        String[] insertList = req.getParameterValues("valueArr");
+        for (int i=0; i<insertList.length; i++) {
+            System.out.println(insertList[i]);
+        }
+        return "search/kakaosearch";
+    }
+
 }

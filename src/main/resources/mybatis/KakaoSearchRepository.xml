@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aeat.aeatproject.repository.SearchRepository">
+<mapper namespace="com.aeat.aeatproject.repository.KakaoSearchRepository">
     <resultMap id="simpleKakaoSearchApi" type="KakaoSearchDto">
         <id property="seq" column="kakaosearch_seq"/>
         <result property="addressName" column="kakaosearch_address_name"/>
@@ -15,15 +15,15 @@
         <result property="mapy" column="kakaosearch_map_y"/>
     </resultMap>
 
-    <!-- search 된 파일 등록 -->
-<!--    <update id="insertKakaoSearch">-->
-<!--        UPDATE kakaosearch-->
-<!--        SET kakaosesarch_title        = #{title},-->
-<!--            search_link         = #{link},-->
-<!--            search_category     = #{category},-->
-<!--            search_address      = #{address},-->
-<!--            search_road_address = #{roadAddress},-->
-<!--            search_map_x        = #{mapx},-->
-<!--            search_map_y        = #{mapy}-->
-<!--    </update>-->
+    <insert id="insertKakaoSearch" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO kakaosearch(kakaosearch_address_name,
+                                kakaosearch_category_name,
+                                kakaosearch_phone,
+                                kakaosearch_place_name,
+                                kakaosearch_place_url,
+                                kakaosearch_road_address_name,
+                                kakaosearch_map_x,
+                                kakaosearch_map_y)
+        VALUES(#{addressName}, #{categoryName}, #{phone}, #{placeName}, #{placeUrl}, #{roadAddressName}, #{mapx}, #{mapy})
+    </insert>
 </mapper>

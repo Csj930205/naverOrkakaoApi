@@ -14,7 +14,7 @@
         <div class="form-group">
             <input type="text" id="keyword" name="keyword" placeholder="검색어를 입력하세요">
         </div>
-        <button type="submit" id="submit_btn">검색</button>
+        <button type="submit">검색</button>
     </form>
 </div>
 <div class="container" th:if="${kakaoSearchList}">
@@ -22,6 +22,7 @@
     <table class="table">
         <thead class="thead-light">
         <tr class="text-center">
+            <th><input type="checkbox" id="allCheck" name="allCheck"></th>
             <th scope="col">placeName</th>
             <th scope="col">categoryName</th>
             <th scope="col">phone</th>
@@ -31,16 +32,77 @@
         </thead>
         <tbody>
         <tr class="text-center" th:each="kakaosearch:${kakaoSearchList}">
-            <th scope="row" th:text="${kakaosearch.place_name}"></th>
-            <th scope="row" th:text="${kakaosearch.category_name}"></th>
+            <th>
+                <input type="checkbox" name="selectCheck" th:value="${kakaosearch}">
+            </th>
+            <th scope="row" th:text="${kakaosearch.placeName}"></th>
+            <th scope="row" th:text="${kakaosearch.categoryName}"></th>
             <th scope="row" th:text="${kakaosearch.phone}"></th>
-            <th scope="row" th:text="${kakaosearch.road_address_name}"></th>
-            <th scope="row" th:text="${kakaosearch.address_name}"></th>
+            <th scope="row" th:text="${kakaosearch.roadAddressName}"></th>
+            <th scope="row" th:text="${kakaosearch.addressName}"></th>
+            <th scope="row" th:text="${kakaosearch.mapx}" hidden></th>
+            <th scope="row" th:text="${kakaosearch.mapy}" hidden></th>
         </tr>
         </tbody>
     </table>
+        <input type="button" value="등록" class="btn btn-outline-info" onclick="insertValue()">
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
+    $(function (){
+        var chkObj = document.getElementsByName("allCheck")
+        var rowCnt = chkObj.length;
+
+        $("input[name='allCheck']").click(function (){
+            var chk_istArr = $("input[name='selectCheck']");
+            for (var i=0; i<chk_istArr.length; i++) {
+                chk_istArr[i].checked = this.checked;
+            }
+        });
+        $("input[name='selectCheck']").click(function (){
+            if($("input[name='selectCheck']:checked").length == rowCnt) {
+                $("input[name='allCheck']")[0].checked = true;
+            } else {
+                $("input[name='allCheck']")[0].checked = false;
+            }
+        });
+    });
+
+    function insertValue() {
+        var url = "/search/kakaosearch/insert";
+        var valueArr = new Array();
+        var list = $("input[name='selectCheck']");
+        for (var i=0; i<list.length; i++) {
+            if(list[i].checked) {
+                valueArr.push(list[i].value);
+            }
+        }
+        if(valueArr.length == 0) {
+            alert("선택된 항목이 없습니다.")
+        } else {
+            var chk = confirm("등록하시겠습니까?")
+            $.ajax({
+                url : url ,
+                type: 'POST' ,
+                traditional : true ,
+                data : {
+                    valueArr : valueArr
+                } ,
+                success: function (data) {
+                    if(data = 1) {
+                        console.log(data)
+                        alert("등록 성공")
+                        location.replace("/search/kakaosearch")
+                    } else {
+                        console.log("??")
+                        alert("등록 실패");
+                    }
+                }
+            });
+        }
+        console.log(valueArr)
+    }
+
     // 마커를 저장할 배열
     var markers = [];
 
@@ -56,14 +118,13 @@
     // 지도 생성
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+    var infowindow = new kakao.maps.InfoWindow({zIndex: 1});
 
-    if(markers != null) {
+    if (markers != null) {
         // 키워드를 통해 입력받은 배열 for문으로 좌표값만 산출 후 마커 생성에 저장
         for (var i = 0; i < data.length; i++) {
-            var markerPositions = new kakao.maps.LatLng(data[i].y, data[i].x);
+            var markerPositions = new kakao.maps.LatLng(data[i].mapy, data[i].mapx);
             marker = addMarker(markerPositions, i);
-
 
         }
 
